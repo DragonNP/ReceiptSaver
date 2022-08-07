@@ -1,0 +1,29 @@
+﻿<Window x:Class="ReceiptSaver.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReceiptSaver"
+        mc:Ignorable="d"
+        Title="ReceiptSaver" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="52*"/>
+            <ColumnDefinition Width="173*"/>
+            <ColumnDefinition Width="175*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48*"/>
+            <RowDefinition Height="353*"/>
+        </Grid.RowDefinitions>
+        <TextBox x:Name="qrRawBox" TextWrapping="Wrap" VerticalAlignment="Center" FontFamily="Arial" FontSize="16" Grid.Column="1" Margin="84,0,22,0" BorderBrush="Black" Grid.ColumnSpan="2" Height="20"/>
+        <Button x:Name="searchButton" Content="Найти чек" HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Arial" FontSize="16" Click="searchButton_Click" BorderBrush="Black" Background="White" Margin="2,0,0,0" Grid.Column="1" Height="22" Width="78"/>
+
+        <StackPanel Grid.Column="1" Grid.Row="1">
+            <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Arial" FontSize="16" Content="ИТОГО: "/>
+                <TextBox x:Name="sumBox" TextWrapping="Wrap" FontFamily="Arial" FontSize="16"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
