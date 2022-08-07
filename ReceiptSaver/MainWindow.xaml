@@ -7,26 +7,23 @@
         mc:Ignorable="d"
         Title="ReceiptSaver" Height="450" Width="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="52*"/>
-            <ColumnDefinition Width="173*"/>
-            <ColumnDefinition Width="175*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="27*"/>
             <RowDefinition Height="353*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2">
+        <Grid Grid.Row="0" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="139*" />
-                <ColumnDefinition Width="531*" />
+                <ColumnDefinition Width="110*" />
+                <ColumnDefinition Width="500*" />
+                <ColumnDefinition Width="110*" />
                 <ColumnDefinition Width="10*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="searchButton" Grid.Column="0" Content="Найти чек" FontFamily="Arial" FontSize="16" Click="searchButton_Click" BorderBrush="Black" Background="White"/>
+            <Button x:Name="searchButton" Grid.Column="0" Content="Найти чек" FontFamily="Arial" FontSize="16" Click="searchButton_Click" BorderBrush="Black" Background="White" VerticalAlignment="Center"/>
             <TextBox x:Name="qrRawBox"  Grid.Column="1" TextWrapping="Wrap" FontFamily="Arial" FontSize="16" BorderBrush="Black" VerticalContentAlignment="Center"/>
+            <Button x:Name="selectFile" Grid.Column="2" Content="Выбрать файл" FontFamily="Arial" FontSize="16" BorderBrush="Black" Background="White" VerticalAlignment="Center" Click="selectFile_Click"/>
         </Grid>
-        <TabControl Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2">
+        <TabControl Grid.Row="1" Grid.ColumnSpan="2">
             <TabItem Header="Основаная информация" FontFamily="Arial" FontSize="16">
                 <Grid Background="Transparent">
                     <StackPanel>

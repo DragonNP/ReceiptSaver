@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,37 +12,25 @@ namespace ProverkachekaSDK
     public class Proverkacheka
     {
         private readonly string apiToken;
-        private static HttpClient client = new HttpClient();
-        private static string url = "https://proverkacheka.com/api/v1/check/get";
+        private static readonly HttpClient client = new HttpClient();
+        private static readonly string url = "https://proverkacheka.com/api/v1/check/get";
 
         public Proverkacheka(string apiToken)
         {
             this.apiToken = apiToken;
         }
 
-        public Receipt Get(string qrRaw)
+        public Task<Receipt> GetAsyncByRaw(string qrRaw)
         {
-            return Get(apiToken, qrRaw);
+            return GetAsyncByRaw(apiToken, qrRaw);
         }
 
-        public static Receipt Get(string apiToken, string qrRaw)
+        public Task<Receipt> GetAsyncByFile(string filepath)
         {
-            return GetAsync(apiToken, qrRaw).GetAwaiter().GetResult();
+            return GetAsyncByFile(apiToken, filepath);
         }
 
-        public Task<Receipt> GetAsync(string qrRaw)
-        {
-            return _GetAsync(apiToken, qrRaw);
-        }
-
-        public static Task<Receipt> GetAsync(string apiToken, string qrRaw)
-        {
-            return _GetAsync(apiToken, qrRaw);
-        }
-
-
-
-        private static async Task<Receipt> _GetAsync(string apiToken, string qrRaw)
+        public static async Task<Receipt> GetAsyncByRaw(string apiToken, string qrRaw)
         {
             var values = new Dictionary<string, string>
             {
@@ -59,6 +48,34 @@ namespace ProverkachekaSDK
                 Console.WriteLine("Error");
                 Console.WriteLine(json.ToString());
                 return new Receipt();
+            }
+
+            JObject data = (JObject)json["data"]["json"];
+            JArray items = (JArray)json["data"]["json"]["items"];
+
+            List<Product> goods = GetGoods(items);
+            return JsonToReceipt(data, goods);
+        }
+
+        public static async Task<Receipt> GetAsyncByFile(string apiToken, string filepath)
+        {
+            var content = new MultipartFormDataContent();
+            content.Add(new StringContent(apiToken), "token");
+
+            var fileContent = new ByteArrayContent(System.IO.File.ReadAllBytes(filepath));
+            fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("qrfile")
+            {
+                FileName = $"qr.{filepath.Split('.').Last()}"
+            };
+            content.Add(fileContent);
+
+            var response = await client.PostAsync(url, content);
+            var json = JObject.Parse(await response.Content.ReadAsStringAsync());
+
+            switch (json["code"].ToString())
+            {
+                case "3":
+                    return new Receipt(json["data"].ToString());
             }
 
             JObject data = (JObject)json["data"]["json"];

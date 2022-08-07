@@ -86,5 +86,13 @@ namespace ProverkachekaSDK
         /// Товары
         /// </summary>
         public List<Product> Goods { get; set; } = new List<Product>();
+
+        /// <summary>
+        /// Сообщение, если не удалась добавить чек
+        /// </summary>
+        public string Message { get; } = "";
+
+        public Receipt() {}
+        public Receipt(string message) => Message = message;
     }
 }

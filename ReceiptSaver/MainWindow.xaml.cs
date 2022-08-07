@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Win32;
 using ProverkachekaSDK;
 
 namespace ReceiptSaver
@@ -16,33 +18,48 @@ namespace ReceiptSaver
         public MainWindow()
         {
             InitializeComponent();
-
-
         }
 
-        private void searchButton_Click(object sender, RoutedEventArgs e)
+        private async void searchButton_Click(object sender, RoutedEventArgs e)
         {
             searchButton.Content = "Идёт поиск...";
             searchButton.IsEnabled = false;
 
             string qrRaw = qrRawBox.Text;
-            ShowReceipt(qrRaw);
+            ShowReceipt(await GetReciept(qrRaw));
         }
-
-        private async void ShowReceipt(string qrRaw)
+        private async Task<Receipt> GetReciept(string qrRaw)
         {
             Proverkacheka proverkacheka = new Proverkacheka(apiToken);
-            Receipt receipt = await proverkacheka.GetAsync(qrRaw);
+            return await proverkacheka.GetAsyncByRaw(qrRaw);
+        }
+        private async Task<Receipt> GetRecieptByFile(string filepath)
+        {
+            Proverkacheka proverkacheka = new Proverkacheka(apiToken);
+            return await proverkacheka.GetAsyncByFile(filepath);
+        }
+
+        private void ShowReceipt(Receipt receipt)
+        {
+            if (receipt.Message != "")
+            {
+                MessageBox.Show(receipt.Message);
+
+                searchButton.Content = "Найти чек";
+                searchButton.IsEnabled = true;
+
+                return;
+            }
 
             userBox.Text = !string.IsNullOrEmpty(receipt.User) ? receipt.User : "Не указано";
             addressBox.Text = !string.IsNullOrEmpty(receipt.Address) ? receipt.Address : "Не указано";
-            nds20Box.Text = receipt.Nds20 > 0 ? $"{receipt.Nds20 / 100} руб." : "Нет";
-            nds10Box.Text = receipt.Nds10 > 0 ? $"{receipt.Nds10 / 100} руб." : "Нет";
-            ndsNoBox.Text = receipt.NdsNo > 0 ? $"{receipt.NdsNo / 100} руб." : "Нет";
+            nds20Box.Text = receipt.Nds20 > 0 ? $"{receipt.Nds20 / 100}руб." : "Нет";
+            nds10Box.Text = receipt.Nds10 > 0 ? $"{receipt.Nds10 / 100}руб." : "Нет";
+            ndsNoBox.Text = receipt.NdsNo > 0 ? $"{receipt.NdsNo / 100}руб." : "Нет";
             regionBox.Text = receipt.Region > 0 ? receipt.Region.ToString() : "Не указано";
             dateBox.Text = receipt.Date.ToString();
             placeBox.Text = !string.IsNullOrEmpty(receipt.RetailPlace) ? receipt.RetailPlace : "Не указано";
-            sumBox.Text = $"{receipt.TotalSum / 100} руб. (нал:{receipt.CashTotalSum / 100}руб., безнал:{receipt.EcashTotalSum / 100}руб.)";
+            sumBox.Text = $"{receipt.TotalSum / 100}руб. (нал:{receipt.CashTotalSum / 100}руб., безнал:{receipt.EcashTotalSum / 100}руб.)";
 
             switch (receipt.TaxationType)
             {
@@ -103,6 +120,27 @@ namespace ReceiptSaver
                 box.Text = product.Name;
 
                 goodsPlace.Children.Add(box);
+            }
+        }
+
+        private async void selectFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+
+            dialog.Multiselect = false;
+            dialog.Title = "Выберите фотографию с qr-кодом";
+            dialog.AddExtension = true;
+            dialog.Filter = "Фото (*.png, *.jpg, *.jpeg)|*.png;*.jpg;*.jpeg";
+
+            bool result = (bool)dialog.ShowDialog();
+
+            if (result)
+            {
+                searchButton.Content = "Идёт поиск...";
+                searchButton.IsEnabled = false;
+
+                string filepath = dialog.FileName;
+                ShowReceipt(await GetRecieptByFile(filepath));
             }
         }
     }
