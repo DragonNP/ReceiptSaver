@@ -13,11 +13,15 @@ namespace ReceiptSaver
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string apiToken = "15239.20dUQQYmlHxbOPLzb";
+        private readonly string apiToken;
+        private readonly Proverkacheka proverkacheka;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            apiToken = "15239.20dUQQYmlHxbOPLzb";
+            proverkacheka = new Proverkacheka(apiToken);
         }
 
         private async void searchButton_Click(object sender, RoutedEventArgs e)
@@ -28,14 +32,35 @@ namespace ReceiptSaver
             string qrRaw = qrRawBox.Text;
             ShowReceipt(await GetReciept(qrRaw));
         }
+
+        private async void selectFile_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+
+            dialog.Multiselect = false;
+            dialog.Title = "Выберите фотографию с qr-кодом";
+            dialog.AddExtension = true;
+            dialog.Filter = "Фото (*.png, *.jpg, *.jpeg)|*.png;*.jpg;*.jpeg";
+
+            bool result = (bool)dialog.ShowDialog();
+
+            if (result)
+            {
+                searchButton.Content = "Идёт поиск...";
+                searchButton.IsEnabled = false;
+
+                string filepath = dialog.FileName;
+                ShowReceipt(await GetRecieptByFile(filepath));
+            }
+        }
+
         private async Task<Receipt> GetReciept(string qrRaw)
         {
-            Proverkacheka proverkacheka = new Proverkacheka(apiToken);
             return await proverkacheka.GetAsyncByRaw(qrRaw);
         }
+
         private async Task<Receipt> GetRecieptByFile(string filepath)
         {
-            Proverkacheka proverkacheka = new Proverkacheka(apiToken);
             return await proverkacheka.GetAsyncByFile(filepath);
         }
 
@@ -120,27 +145,6 @@ namespace ReceiptSaver
                 box.Text = product.Name;
 
                 goodsPlace.Children.Add(box);
-            }
-        }
-
-        private async void selectFile_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog dialog = new OpenFileDialog();
-
-            dialog.Multiselect = false;
-            dialog.Title = "Выберите фотографию с qr-кодом";
-            dialog.AddExtension = true;
-            dialog.Filter = "Фото (*.png, *.jpg, *.jpeg)|*.png;*.jpg;*.jpeg";
-
-            bool result = (bool)dialog.ShowDialog();
-
-            if (result)
-            {
-                searchButton.Content = "Идёт поиск...";
-                searchButton.IsEnabled = false;
-
-                string filepath = dialog.FileName;
-                ShowReceipt(await GetRecieptByFile(filepath));
             }
         }
     }

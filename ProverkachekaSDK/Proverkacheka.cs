@@ -4,17 +4,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ProverkachekaSDK
 {
     public class Proverkacheka
     {
+        /// <summary>
+        /// Токен от сервиса proverkacheka.com
+        /// </summary>
         private readonly string apiToken;
-        private static readonly HttpClient client = new HttpClient();
+        /// <summary>
+        /// Ссылка на API сервиса
+        /// </summary>
         private static readonly string url = "https://proverkacheka.com/api/v1/check/get";
+        private static readonly HttpClient client = new HttpClient();
 
+        /// <summary>
+        /// Инициализация класса
+        /// </summary>
+        /// <param name="apiToken">Токен из proverkacheka.com</param>
         public Proverkacheka(string apiToken)
         {
             this.apiToken = apiToken;
@@ -37,41 +46,33 @@ namespace ProverkachekaSDK
                 { "token", apiToken},
                 { "qrraw", qrRaw }
             };
-
             var content = new FormUrlEncodedContent(values);
             var response = await client.PostAsync(url, content);
-
             var json = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-            if (json["code"].ToString() != "1")
-            {
-                Console.WriteLine("Error");
-                Console.WriteLine(json.ToString());
-                return new Receipt();
-            }
-
-            JObject data = (JObject)json["data"]["json"];
-            JArray items = (JArray)json["data"]["json"]["items"];
-
-            List<Product> goods = GetGoods(items);
-            return JsonToReceipt(data, goods);
+            return ConvertJsonToReceipt(json);
         }
 
         public static async Task<Receipt> GetAsyncByFile(string apiToken, string filepath)
         {
             var content = new MultipartFormDataContent();
-            content.Add(new StringContent(apiToken), "token");
-
             var fileContent = new ByteArrayContent(System.IO.File.ReadAllBytes(filepath));
+
             fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("qrfile")
             {
                 FileName = $"qr.{filepath.Split('.').Last()}"
             };
+            content.Add(new StringContent(apiToken), "token");
             content.Add(fileContent);
 
             var response = await client.PostAsync(url, content);
             var json = JObject.Parse(await response.Content.ReadAsStringAsync());
 
+            return ConvertJsonToReceipt(json);
+        }
+
+        private static Receipt ConvertJsonToReceipt(JObject json)
+        {
             switch (json["code"].ToString())
             {
                 case "3":
@@ -81,11 +82,12 @@ namespace ProverkachekaSDK
             JObject data = (JObject)json["data"]["json"];
             JArray items = (JArray)json["data"]["json"]["items"];
 
-            List<Product> goods = GetGoods(items);
-            return JsonToReceipt(data, goods);
+            List<Product> goods = JsonToGoods(items);
+            Receipt receipt = BuildReceipt(data, goods);
+            return receipt;
         }
 
-        private static List<Product> GetGoods(JArray items)
+        private static List<Product> JsonToGoods(JArray items)
         {
             List<Product> goods = new List<Product>();
 
@@ -104,7 +106,7 @@ namespace ProverkachekaSDK
             return goods;
         }
 
-        private static Receipt JsonToReceipt(JObject data, List<Product> goods)
+        private static Receipt BuildReceipt(JObject data, List<Product> goods)
         {
             Receipt receipt = new Receipt()
             {
