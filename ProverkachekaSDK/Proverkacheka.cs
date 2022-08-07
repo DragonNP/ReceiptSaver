@@ -74,7 +74,7 @@ namespace ProverkachekaSDK
 
             for (int i = 0; i < items.Count; i++)
             {
-                var product = items[0];
+                var product = items[i];
                 goods.Add(new Product()
                 {
                     Sum = Convert.ToInt32(product["sum"]),
