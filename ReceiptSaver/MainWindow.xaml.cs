@@ -76,8 +76,8 @@ namespace ReceiptSaver
                 return;
             }
 
-            userBox.Text = !string.IsNullOrEmpty(receipt.User) ? receipt.User : "Не указано";
-            addressBox.Text = !string.IsNullOrEmpty(receipt.Address) ? receipt.Address : "Не указано";
+            userLabel.Content = !string.IsNullOrEmpty(receipt.User) ? receipt.User : "Не указано";
+            addresLabel.Content = !string.IsNullOrEmpty(receipt.Address) ? receipt.Address : "Не указано";
             nds20Box.Text = receipt.Nds20 > 0 ? $"{receipt.Nds20 / 100}руб." : "Нет";
             nds10Box.Text = receipt.Nds10 > 0 ? $"{receipt.Nds10 / 100}руб." : "Нет";
             ndsNoBox.Text = receipt.NdsNo > 0 ? $"{receipt.NdsNo / 100}руб." : "Нет";
@@ -114,19 +114,19 @@ namespace ReceiptSaver
             switch (receipt.OperationType)
             {
                 case 1:
-                    operationBox.Text = "Приход";
+                    operationLabel.Content = "Приход";
                     break;
                 case 2:
-                    operationBox.Text = "Возврат прихода";
+                    operationLabel.Content = "Возврат прихода";
                     break;
                 case 3:
-                    operationBox.Text = "Расход";
+                    operationLabel.Content = "Расход";
                     break;
                 case 4:
-                    operationBox.Text = "Возврат расхода";
+                    operationLabel.Content = "Возврат расхода";
                     break;
                 default:
-                    operationBox.Text = "Не указано";
+                    operationLabel.Content = "Не указано";
                     break;
             }
 
