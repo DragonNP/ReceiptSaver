@@ -23,67 +23,38 @@
             <TextBox x:Name="qrRawBox"  Grid.Column="1" TextWrapping="Wrap" FontFamily="Arial" FontSize="16" BorderBrush="Black" VerticalContentAlignment="Center"/>
             <Button x:Name="selectFile" Grid.Column="2" Content="Выбрать файл" FontFamily="Arial" FontSize="16" BorderBrush="Black" Background="White" VerticalAlignment="Center" Click="selectFile_Click"/>
         </Grid>
-        <TabControl Grid.Row="1" Grid.ColumnSpan="2">
-            <TabItem Header="Основаная информация" FontFamily="Arial" FontSize="16">
-                <Grid Background="Transparent">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="11*"/>
-                        <RowDefinition Height="9*"/>
-                        <RowDefinition Height="9*"/>
-                        <RowDefinition Height="98*"/>
-                    </Grid.RowDefinitions>
-                    <Label x:Name="userLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontFamily="Arial" FontWeight="Bold" FontSize="18"/>
-                    <Label x:Name="addresLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontFamily="Arial" FontSize="14" MinHeight="1" Grid.Row="1"/>
-                    <Label x:Name="operationLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontFamily="Arial" FontSize="14" MinHeight="1" Grid.Row="2" Grid.Column="2"/>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Основаная информация" FontFamily="Arial" FontSize="16">
-                <Grid Background="Transparent">
-                    <StackPanel>
-                        <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                            <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Arial" FontSize="16" Content="НДС 20%:"/>
-                            <TextBox x:Name="nds20Box" TextWrapping="Wrap" FontFamily="Arial" FontSize="16" TextAlignment="Center" IsReadOnly="True" BorderBrush="Transparent" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="Transparent"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                            <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Arial" FontSize="16" Content="НДС 10%:"/>
-                            <TextBox x:Name="nds10Box" TextWrapping="Wrap" FontFamily="Arial" FontSize="16" TextAlignment="Center" IsReadOnly="True" BorderBrush="Transparent" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="Transparent"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                            <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Arial" FontSize="16" Content="НДС не облагается:"/>
-                            <TextBox x:Name="ndsNoBox" TextWrapping="Wrap" FontFamily="Arial" FontSize="16" TextAlignment="Center" IsReadOnly="True" BorderBrush="Transparent" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="Transparent"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                            <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Arial" FontSize="16" Content="Вид налогоблажения:"/>
-                            <TextBox x:Name="taxationBox" TextWrapping="Wrap" FontFamily="Arial" FontSize="16" TextAlignment="Center" IsReadOnly="True" BorderBrush="Transparent" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="Transparent"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                            <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Arial" FontSize="16" Content="Регион:"/>
-                            <TextBox x:Name="regionBox" TextWrapping="Wrap" FontFamily="Arial" FontSize="16" TextAlignment="Center" IsReadOnly="True" BorderBrush="Transparent" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="Transparent"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                            <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Arial" FontSize="16" Content="Время:"/>
-                            <TextBox x:Name="dateBox" TextWrapping="Wrap" FontFamily="Arial" FontSize="16" TextAlignment="Center" IsReadOnly="True" BorderBrush="Transparent" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="Transparent"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                            <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Arial" FontSize="16" Content="Место:"/>
-                            <TextBox x:Name="placeBox" TextWrapping="Wrap" FontFamily="Arial" FontSize="16" TextAlignment="Center" IsReadOnly="True" BorderBrush="Transparent" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="Transparent"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent">
-                            <Label HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Arial" FontSize="16" Content="Итого:"/>
-                            <TextBox x:Name="sumBox" TextWrapping="Wrap" FontFamily="Arial" FontSize="16" TextAlignment="Center" IsReadOnly="True" BorderBrush="Transparent" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Background="Transparent"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Позиции в чеке" FontFamily="Arial" FontSize="16">
-                <Grid Background="Transparent">
-                    <ScrollViewer>
-                        <StackPanel x:Name="goodsPlace">
+        <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Grid x:Name="goodsGrid" Background="Transparent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="11*"/>
+                    <RowDefinition Height="9*"/>
+                    <RowDefinition Height="9*"/>
+                    <RowDefinition Height="9*"/>
+                    <RowDefinition Height="9*"/>
+                    <RowDefinition Height="80*"/>
+                </Grid.RowDefinitions>
+                <Label x:Name="userLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontFamily="Arial" FontWeight="Bold" FontSize="18"/>
+                <Label x:Name="addresLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontFamily="Arial" FontSize="14" MinHeight="1" Grid.Row="1"/>
+                <Label x:Name="operationLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontFamily="Arial" FontSize="14" MinHeight="1" Grid.Row="2"/>
+                <Label x:Name="dateLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontFamily="Arial" FontSize="14" MinHeight="1" Grid.Row="3"/>
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="10*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="№" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold"/>
+                    <Label Content="Название" HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="1"/>
+                    <Label Content="Цена" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="2"/>
+                    <Label Content="Кол." HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="3"/>
+                    <Label Content="Сумма" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="4"/>
 
-                        </StackPanel>
-                    </ScrollViewer>
                 </Grid>
-            </TabItem>
-        </TabControl>
+                <StackPanel x:Name="goodsPanel" Grid.Row="5">
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </Window>
