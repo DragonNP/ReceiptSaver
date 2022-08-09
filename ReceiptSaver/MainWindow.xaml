@@ -45,11 +45,11 @@
                         <ColumnDefinition Width="10*"/>
                         <ColumnDefinition Width="10*"/>
                     </Grid.ColumnDefinitions>
-                    <Label Content="№" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold"/>
-                    <Label Content="Название" HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="1"/>
-                    <Label Content="Цена" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="2"/>
-                    <Label Content="Кол." HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="3"/>
-                    <Label Content="Сумма" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="4"/>
+                    <Label Content="№" BorderBrush="Black" BorderThickness="0, 0.3, 0, 0.3" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold"/>
+                    <Label Content="Название" BorderBrush="Black" BorderThickness="0, 0.3, 0, 0.3" HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="1"/>
+                    <Label Content="Цена" BorderBrush="Black" BorderThickness="0, 0.3, 0, 0.3" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="2"/>
+                    <Label Content="Кол." BorderBrush="Black" BorderThickness="0, 0.3, 0, 0.3" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="3"/>
+                    <Label Content="Сумма" BorderBrush="Black" BorderThickness="0, 0.3, 0, 0.3" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="4"/>
                 </Grid>
                 <StackPanel x:Name="goodsPanel" Grid.Row="5">
                 </StackPanel>

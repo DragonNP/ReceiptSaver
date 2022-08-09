@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using Microsoft.Win32;
+using IronBarCode;
 using ProverkachekaSDK;
 
 namespace ReceiptSaver
@@ -26,7 +28,7 @@ namespace ReceiptSaver
             proverkacheka = new Proverkacheka(apiToken);
 
             goodsGrid.Visibility = Visibility.Hidden;
-            selectFile.IsEnabled = false;
+            //selectFile.IsEnabled = false;
         }
 
         private async void searchButton_Click(object sender, RoutedEventArgs e)
@@ -34,6 +36,7 @@ namespace ReceiptSaver
             searchButton.Content = "Идёт поиск...";
             searchButton.IsEnabled = false;
             goodsGrid.Visibility = Visibility.Hidden;
+            selectFile.IsEnabled = false;
 
             string qrRaw = qrRawBox.Text;
             Receipt receipt = await GetReciept(qrRaw);
@@ -41,10 +44,32 @@ namespace ReceiptSaver
             ShowTitle(receipt);
             ShowGoods(receipt.Goods);
             ShowFooter(receipt);
+
+            searchButton.Content = "Найти чек";
+            searchButton.IsEnabled = true;
+            selectFile.IsEnabled = true;
+            goodsGrid.Visibility = Visibility.Visible;
         }
 
         private void selectFile_Click(object sender, RoutedEventArgs e)
         {
+            OpenFileDialog dialog = new OpenFileDialog();
+
+            dialog.Filter = "Фотографии (*.png, *jpg)|*.png;*.jpg";
+            dialog.Multiselect = false;
+            dialog.Title = "Выберите файл с QR кодом";
+            dialog.RestoreDirectory = true;
+
+            if ((bool)dialog.ShowDialog())
+            {
+                string filename = dialog.FileName;
+                qrRawBox.Text = filename;
+
+                BarcodeResults result = BarcodeReader.Read(filename);
+
+                qrRawBox.Text = result.Values()[0];
+                searchButton_Click(sender, e);
+            }
         }
 
         private async Task<Receipt> GetReciept(string qrRaw)
@@ -68,7 +93,7 @@ namespace ReceiptSaver
 
             userLabel.Content = !string.IsNullOrEmpty(receipt.User) ? receipt.User : "Не указано";
             addresLabel.Content = !string.IsNullOrEmpty(receipt.Address) ? FormatAddress(receipt.Address) : "Не указано";
-            dateLabel.Content = receipt.Date.ToString();
+            dateLabel.Content = receipt.Date.ToString("MM.dd.yyyy HH:mm");
 
             switch (receipt.OperationType)
             {
@@ -88,12 +113,6 @@ namespace ReceiptSaver
                     operationLabel.Content = "Не указано";
                     break;
             }
-
-            ShowGoods(receipt.Goods);
-
-            searchButton.Content = "Найти чек";
-            searchButton.IsEnabled = true;
-            goodsGrid.Visibility = Visibility.Visible;
         }
 
         private void ShowGoods(List<Product> goods)
@@ -114,7 +133,7 @@ namespace ReceiptSaver
                 grid.Children.Add(CreateProductLabel(position.ToString(), HorizontalAlignment.Center, 0));
                 grid.Children.Add(CreateProductLabel(product.Name, HorizontalAlignment.Left, 1));
                 grid.Children.Add(CreateProductLabel(FormatMoney(product.Price), HorizontalAlignment.Right, 2));
-                grid.Children.Add(CreateProductLabel(product.Quantity.ToString(), HorizontalAlignment.Left, 3));
+                grid.Children.Add(CreateProductLabel(product.Quantity.ToString(), HorizontalAlignment.Center, 3));
                 grid.Children.Add(CreateProductLabel(FormatMoney(product.Sum), HorizontalAlignment.Right, 4));
 
                 goodsPanel.Children.Add(grid);
@@ -146,7 +165,11 @@ namespace ReceiptSaver
             while (address[address.Length - 1] == ',')
                 address = address.Remove(address.Length - 1);
 
-            address = address.Replace(",,", ", ");
+            address = address.Replace(",,", ",");
+            address = address.Replace(", ", ",");
+            address = address.Replace(" ,", ",");
+            address = address.Replace(",", ", ");
+
 
             return address;
         }
@@ -200,9 +223,11 @@ namespace ReceiptSaver
                 Content = content,
                 HorizontalContentAlignment = horizontalAlignment,
                 VerticalContentAlignment = VerticalAlignment.Center,
-                FontFamily = new System.Windows.Media.FontFamily("Arial"),
+                FontFamily = new FontFamily("Arial"),
                 FontSize = NormalFontSize,
                 FontWeight = NormalFontWeight,
+                BorderBrush = Brushes.Black,
+                BorderThickness = new Thickness(0, 0, 0, 0.3),
             };
             Grid.SetColumn(label, columnValue);
             return label;
