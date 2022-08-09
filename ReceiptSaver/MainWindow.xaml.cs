@@ -15,6 +15,8 @@ namespace ReceiptSaver
     {
         private readonly string apiToken;
         private readonly Proverkacheka proverkacheka;
+        private readonly int NormalFontSize = 14;
+        private readonly FontWeight NormalFontWeight = FontWeights.Normal;
 
         public MainWindow()
         {
@@ -34,7 +36,11 @@ namespace ReceiptSaver
             goodsGrid.Visibility = Visibility.Hidden;
 
             string qrRaw = qrRawBox.Text;
-            ShowReceipt(await GetReciept(qrRaw));
+            Receipt receipt = await GetReciept(qrRaw);
+
+            ShowTitle(receipt);
+            ShowGoods(receipt.Goods);
+            ShowFooter(receipt);
         }
 
         private void selectFile_Click(object sender, RoutedEventArgs e)
@@ -46,7 +52,7 @@ namespace ReceiptSaver
             return await proverkacheka.GetAsyncByRaw(qrRaw);
         }
 
-        private void ShowReceipt(Receipt receipt)
+        private void ShowTitle(Receipt receipt)
         {
             if (receipt.Message != "")
             {
@@ -87,7 +93,6 @@ namespace ReceiptSaver
 
             searchButton.Content = "Найти чек";
             searchButton.IsEnabled = true;
-
             goodsGrid.Visibility = Visibility.Visible;
         }
 
@@ -105,15 +110,35 @@ namespace ReceiptSaver
                 grid.ColumnDefinitions.Add(CreateColumnDefinition(10, GridUnitType.Star));
                 grid.ColumnDefinitions.Add(CreateColumnDefinition(10, GridUnitType.Star));
 
+                // Добавление товара в сетку
                 grid.Children.Add(CreateProductLabel(position.ToString(), HorizontalAlignment.Center, 0));
                 grid.Children.Add(CreateProductLabel(product.Name, HorizontalAlignment.Left, 1));
-                grid.Children.Add(CreateProductLabel(FormatPriceNum(product.Price), HorizontalAlignment.Right, 2));
+                grid.Children.Add(CreateProductLabel(FormatMoney(product.Price), HorizontalAlignment.Right, 2));
                 grid.Children.Add(CreateProductLabel(product.Quantity.ToString(), HorizontalAlignment.Left, 3));
-                grid.Children.Add(CreateProductLabel(FormatPriceNum(product.Sum), HorizontalAlignment.Right, 4));
+                grid.Children.Add(CreateProductLabel(FormatMoney(product.Sum), HorizontalAlignment.Right, 4));
 
                 goodsPanel.Children.Add(grid);
                 position++;
             }
+        }
+
+        private void ShowFooter(Receipt receipt)
+        {
+            AddContentToFooter("ИТОГО:", FormatMoney(receipt.TotalSum), 18, FontWeights.Bold);
+            AddContentToFooter("Наличными", FormatMoney(receipt.CashTotalSum));
+            AddContentToFooter("Карта", FormatMoney(receipt.EcashTotalSum));
+
+            // НДС 20%
+            if (receipt.Nds20 != 0)
+                AddContentToFooter("НДС 20%", FormatMoney(receipt.Nds20));
+
+            // НДС 10%
+            if (receipt.Nds10 != 0)
+                AddContentToFooter("НДС 10%", FormatMoney(receipt.Nds10));
+
+            // НДС не облагается
+            if (receipt.NdsNo != 0)
+                AddContentToFooter("НДС не облагается", FormatMoney(receipt.NdsNo));
         }
 
         private string FormatAddress(string address)
@@ -126,12 +151,47 @@ namespace ReceiptSaver
             return address;
         }
 
-        private string FormatPriceNum(int num)
+        private string FormatMoney(int num)
         {
             string rub = (num / 100).ToString();
             string copeics = (num % 100).ToString().Length > 1 ? $"{num % 100}" : $"0{num % 100}";
-            return $"{rub}.{copeics}руб.";
+            return $"{rub}.{copeics}";
         }
+
+        private void AddContentToFooter(string name, string content, int fontFize, FontWeight fontWeight)
+        {
+            Grid grid = new Grid();
+            grid.ColumnDefinitions.Add(CreateColumnDefinition(0, GridUnitType.Auto));
+            grid.ColumnDefinitions.Add(CreateColumnDefinition(1, GridUnitType.Star));
+
+            Label nameLabel = new Label()
+            {
+                Content = name,
+                HorizontalContentAlignment = HorizontalAlignment.Left,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                FontFamily = new System.Windows.Media.FontFamily("Arial"),
+                FontSize = fontFize,
+                FontWeight = fontWeight,
+            };
+            Grid.SetColumn(nameLabel, 0);
+            grid.Children.Add(nameLabel);
+
+            Label contentLabel = new Label()
+            {
+                Content = content,
+                HorizontalContentAlignment = HorizontalAlignment.Right,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                FontFamily = new System.Windows.Media.FontFamily("Arial"),
+                FontSize = fontFize,
+                FontWeight = fontWeight,
+            };
+            Grid.SetColumn(contentLabel, 1);
+            grid.Children.Add(contentLabel);
+
+            footerPanel.Children.Add(grid);
+        }
+
+        private void AddContentToFooter(string name, string content) => AddContentToFooter(name, content, NormalFontSize, NormalFontWeight);
 
         private Label CreateProductLabel(string content, HorizontalAlignment horizontalAlignment, int columnValue)
         {
@@ -141,8 +201,8 @@ namespace ReceiptSaver
                 HorizontalContentAlignment = horizontalAlignment,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 FontFamily = new System.Windows.Media.FontFamily("Arial"),
-                FontSize = 14,
-                FontWeight = FontWeights.Bold
+                FontSize = NormalFontSize,
+                FontWeight = NormalFontWeight,
             };
             Grid.SetColumn(label, columnValue);
             return label;

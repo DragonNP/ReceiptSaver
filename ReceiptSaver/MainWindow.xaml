@@ -17,23 +17,23 @@
                 <ColumnDefinition Width="110*" />
                 <ColumnDefinition Width="500*" />
                 <ColumnDefinition Width="110*" />
-                <ColumnDefinition Width="10*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="searchButton" Grid.Column="0" Content="Найти чек" FontFamily="Arial" FontSize="16" Click="searchButton_Click" BorderBrush="Black" Background="White" VerticalAlignment="Center"/>
-            <TextBox x:Name="qrRawBox"  Grid.Column="1" TextWrapping="Wrap" FontFamily="Arial" FontSize="16" BorderBrush="Black" VerticalContentAlignment="Center"/>
-            <Button x:Name="selectFile" Grid.Column="2" Content="Выбрать файл" FontFamily="Arial" FontSize="16" BorderBrush="Black" Background="White" VerticalAlignment="Center" Click="selectFile_Click"/>
+            <Button x:Name="searchButton" Grid.Column="0" Content="Найти чек" FontFamily="Arial" FontSize="14" Click="searchButton_Click" BorderBrush="Black" Background="White" VerticalAlignment="Center"/>
+            <TextBox x:Name="qrRawBox"  Grid.Column="1" TextWrapping="Wrap" FontFamily="Arial" FontSize="14" BorderBrush="Black" VerticalContentAlignment="Center"/>
+            <Button x:Name="selectFile" Grid.Column="2" Content="Выбрать файл" FontFamily="Arial" FontSize="14" BorderBrush="Black" Background="White" VerticalAlignment="Center" Click="selectFile_Click"/>
         </Grid>
         <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Grid x:Name="goodsGrid" Background="Transparent">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="11*"/>
-                    <RowDefinition Height="9*"/>
-                    <RowDefinition Height="9*"/>
-                    <RowDefinition Height="9*"/>
-                    <RowDefinition Height="9*"/>
-                    <RowDefinition Height="80*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label x:Name="userLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontFamily="Arial" FontWeight="Bold" FontSize="18"/>
+                <Label x:Name="userLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="16"/>
                 <Label x:Name="addresLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontFamily="Arial" FontSize="14" MinHeight="1" Grid.Row="1"/>
                 <Label x:Name="operationLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontFamily="Arial" FontSize="14" MinHeight="1" Grid.Row="2"/>
                 <Label x:Name="dateLabel" HorizontalContentAlignment="Center" VerticalContentAlignment="Top" FontFamily="Arial" FontSize="14" MinHeight="1" Grid.Row="3"/>
@@ -50,9 +50,11 @@
                     <Label Content="Цена" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="2"/>
                     <Label Content="Кол." HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="3"/>
                     <Label Content="Сумма" HorizontalContentAlignment="Right" VerticalContentAlignment="Bottom" FontFamily="Arial" FontSize="14" MinHeight="1" VerticalAlignment="Stretch" FontWeight="Bold" Grid.Column="4"/>
-
                 </Grid>
                 <StackPanel x:Name="goodsPanel" Grid.Row="5">
+                </StackPanel>
+
+                <StackPanel x:Name="footerPanel" Grid.Row="6">
                 </StackPanel>
             </Grid>
         </ScrollViewer>
