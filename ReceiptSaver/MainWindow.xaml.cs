@@ -5,8 +5,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Microsoft.Win32;
-using IronBarCode;
 using ProverkachekaSDK;
+using MessagingToolkit.QRCode.Codec;
+using MessagingToolkit.QRCode.Codec.Data;
+using System.Drawing;
 
 namespace ReceiptSaver
 {
@@ -53,23 +55,24 @@ namespace ReceiptSaver
 
         private void selectFile_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
+                OpenFileDialog dialog = new OpenFileDialog();
 
-            dialog.Filter = "Фотографии (*.png, *jpg)|*.png;*.jpg";
-            dialog.Multiselect = false;
-            dialog.Title = "Выберите файл с QR кодом";
-            dialog.RestoreDirectory = true;
+                dialog.Filter = "Фотографии (*.png, *jpg)|*.png;*.jpg";
+                dialog.Multiselect = false;
+                dialog.Title = "Выберите файл с QR кодом";
+                dialog.RestoreDirectory = true;
 
-            if ((bool)dialog.ShowDialog())
-            {
-                string filename = dialog.FileName;
-                qrRawBox.Text = filename;
+                if ((bool)dialog.ShowDialog())
+                {
+                    string filename = dialog.FileName;
 
-                BarcodeResults result = BarcodeReader.Read(filename);
+                    QRCodeDecoder qRCode = new QRCodeDecoder();
+                    
+                    string qrRaw = qRCode.Decode(new QRCodeBitmapImage(new Bitmap(filename)));
 
-                qrRawBox.Text = result.Values()[0];
-                searchButton_Click(sender, e);
-            }
+                    qrRawBox.Text = qrRaw;
+                    searchButton_Click(sender, e);
+                }
         }
 
         private async Task<Receipt> GetReciept(string qrRaw)
@@ -223,10 +226,10 @@ namespace ReceiptSaver
                 Content = content,
                 HorizontalContentAlignment = horizontalAlignment,
                 VerticalContentAlignment = VerticalAlignment.Center,
-                FontFamily = new FontFamily("Arial"),
+                FontFamily = new System.Windows.Media.FontFamily("Arial"),
                 FontSize = NormalFontSize,
                 FontWeight = NormalFontWeight,
-                BorderBrush = Brushes.Black,
+                BorderBrush = System.Windows.Media.Brushes.Black,
                 BorderThickness = new Thickness(0, 0, 0, 0.3),
             };
             Grid.SetColumn(label, columnValue);
