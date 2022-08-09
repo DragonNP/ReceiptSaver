@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using Microsoft.Win32;
 using ProverkachekaSDK;
 using MessagingToolkit.QRCode.Codec;
@@ -30,7 +29,6 @@ namespace ReceiptSaver
             proverkacheka = new Proverkacheka(apiToken);
 
             goodsGrid.Visibility = Visibility.Hidden;
-            //selectFile.IsEnabled = false;
         }
 
         private async void searchButton_Click(object sender, RoutedEventArgs e)
@@ -80,6 +78,10 @@ namespace ReceiptSaver
             return await proverkacheka.GetAsyncByRaw(qrRaw);
         }
 
+        /// <summary>
+        /// Отображает титульник чека
+        /// </summary>
+        /// <param name="receipt">Чек</param>
         private void ShowTitle(Receipt receipt)
         {
             if (receipt.Message != "")
@@ -118,6 +120,10 @@ namespace ReceiptSaver
             }
         }
 
+        /// <summary>
+        /// Выводит на панель список позиций в чеке
+        /// </summary>
+        /// <param name="goods">Позиции в чеке</param>
         private void ShowGoods(List<Product> goods)
         {
             int position = 1;
@@ -144,6 +150,10 @@ namespace ReceiptSaver
             }
         }
 
+        /// <summary>
+        /// Отображает основную информацию в чеке
+        /// </summary>
+        /// <param name="receipt">Чек</param>
         private void ShowFooter(Receipt receipt)
         {
             AddContentToFooter("ИТОГО:", FormatMoney(receipt.TotalSum), 18, FontWeights.Bold);
@@ -163,6 +173,11 @@ namespace ReceiptSaver
                 AddContentToFooter("НДС не облагается", FormatMoney(receipt.NdsNo));
         }
 
+        /// <summary>
+        /// Форматирует адрес в нормальный вид
+        /// </summary>
+        /// <param name="address">Адрес</param>
+        /// <returns>Выводит испраленный адрес</returns>
         private string FormatAddress(string address)
         {
             while (address[address.Length - 1] == ',')
@@ -177,6 +192,12 @@ namespace ReceiptSaver
             return address;
         }
 
+        /// <summary>
+        /// Преобразует число в денежный вид
+        /// Например: 123.45
+        /// </summary>
+        /// <param name="num">Исходное число</param>
+        /// <returns>Преобразованное число</returns>
         private string FormatMoney(int num)
         {
             string rub = (num / 100).ToString();
@@ -184,6 +205,13 @@ namespace ReceiptSaver
             return $"{rub}.{copeics}";
         }
 
+        /// <summary>
+        /// Добавляет контент в нижнюю часть панели.
+        /// </summary>
+        /// <param name="name">Имя контента</param>
+        /// <param name="content">Сам контент</param>
+        /// <param name="fontFize">Размер шрифта</param>
+        /// <param name="fontWeight">Тип шрифта</param>
         private void AddContentToFooter(string name, string content, int fontFize, FontWeight fontWeight)
         {
             Grid grid = new Grid();
@@ -217,8 +245,21 @@ namespace ReceiptSaver
             footerPanel.Children.Add(grid);
         }
 
+        /// <summary>
+        /// Добавляет контент в нижнюю часть панели.
+        /// Размер шрифта - 14, тип шрифта - Normal
+        /// </summary>
+        /// <param name="name">Имя контента</param>
+        /// <param name="content">Сам контент</param>
         private void AddContentToFooter(string name, string content) => AddContentToFooter(name, content, NormalFontSize, NormalFontWeight);
 
+        /// <summary>
+        /// Создаёт Label для позиции
+        /// </summary>
+        /// <param name="content">Название позиции</param>
+        /// <param name="horizontalAlignment">Горизонтальное выравнивание</param>
+        /// <param name="columnValue">Номер колонки</param>
+        /// <returns>Label позиции</returns>
         private Label CreateProductLabel(string content, HorizontalAlignment horizontalAlignment, int columnValue)
         {
             Label label = new Label()
@@ -236,6 +277,12 @@ namespace ReceiptSaver
             return label;
         }
 
+        /// <summary>
+        /// Создаёт колонку
+        /// </summary>
+        /// <param name="value">Размер колонки</param>
+        /// <param name="type">Единица размера колонки</param>
+        /// <returns></returns>
         private ColumnDefinition CreateColumnDefinition(double value, GridUnitType type)
         {
             return new ColumnDefinition
